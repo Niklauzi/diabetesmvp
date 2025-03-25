@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <h1 class="text-center mb-4">Diabetes Prediction System</h1>
+        <p class="text-center mb-4">Enter your health information to predict diabetes risk</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('predict') }}" method="post">
+            <div class="row">
+                <!-- Medical Conditions Section -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">Medical Conditions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="highbp" class="form-label">High Blood Pressure</label>
+                                <select class="form-select" id="highbp" name="highbp" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you ever been told by a doctor, nurse, or other health professional that you have high blood pressure?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="highchol" class="form-label">High Cholesterol</label>
+                                <select class="form-select" id="highchol" name="highchol" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you ever been told by a health professional that your blood cholesterol is high?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cholcheck" class="form-label">Cholesterol Check in Past 5 Years</label>
+                                <select class="form-select" id="cholcheck" name="cholcheck" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you had your cholesterol checked within the past 5 years?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="stroke" class="form-label">Ever Had Stroke</label>
+                                <select class="form-select" id="stroke" name="stroke" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you ever been told by a health professional that you had a stroke?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="heart_disease" class="form-label">Heart Disease/Attack</label>
+                                <select class="form-select" id="heart_disease" name="heart_disease" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you ever been told by a health professional that you had coronary heart disease (CHD) or myocardial infarction (MI)?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="bmi" class="form-label">BMI</label>
+                                <input type="number" class="form-control" id="bmi" name="bmi" min="10.0" max="70.0" step="0.1" value="25.0" required>
+                                <div class="form-text">Body Mass Index: weight in kilograms divided by height in meters squared (kg/m²)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lifestyle & Health Status Section -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="card-title mb-0">Lifestyle & Health Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="smoker" class="form-label">Smoked 100+ Cigarettes in Life</label>
+                                <select class="form-select" id="smoker" name="smoker" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes]</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phys_activity" class="form-label">Physical Activity in Past 30 Days</label>
+                                <select class="form-select" id="phys_activity" name="phys_activity" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Have you participated in any physical activities or exercises in the past 30 days, other than your regular job?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="fruits" class="form-label">Consume Fruits 1+ Times per Day</label>
+                                <select class="form-select" id="fruits" name="fruits" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Do you consume fruits one or more times per day?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="veggies" class="form-label">Consume Vegetables 1+ Times per Day</label>
+                                <select class="form-select" id="veggies" name="veggies" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Do you consume vegetables one or more times per day?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="hvy_alcohol" class="form-label">Heavy Alcohol Consumption</label>
+                                <select class="form-select" id="hvy_alcohol" name="hvy_alcohol" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Adult men having more than 14 drinks per week and adult women having more than 7 drinks per week</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="gen_health" class="form-label">General Health Rating</label>
+                                <select class="form-select" id="gen_health" name="gen_health" required>
+                                    <option value="1">1 - Excellent</option>
+                                    <option value="2">2 - Very good</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="4">4 - Fair</option>
+                                    <option value="5">5 - Poor</option>
+                                </select>
+                                <div class="form-text">How would you rate your general health?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phys_health" class="form-label">Days of Poor Physical Health</label>
+                                <input type="number" class="form-control" id="phys_health" name="phys_health" min="0" max="30" value="0" required>
+                                <div class="form-text">For how many days during the past 30 days was your physical health not good?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="ment_health" class="form-label">Days of Poor Mental Health</label>
+                                <input type="number" class="form-control" id="ment_health" name="ment_health" min="0" max="30" value="0" required>
+                                <div class="form-text">For how many days during the past 30 days was your mental health not good?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="diff_walk" class="form-label">Difficulty Walking/Climbing Stairs</label>
+                                <select class="form-select" id="diff_walk" name="diff_walk" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Do you have serious difficulty walking or climbing stairs?</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Demographics & Healthcare Section -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="card-title mb-0">Demographics & Healthcare</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="sex" class="form-label">Sex</label>
+                                <select class="form-select" id="sex" name="sex" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="age" class="form-label">Age Group</label>
+                                <select class="form-select" id="age" name="age" required>
+                                    {% for key, value in age_groups.items() %}
+                                        <option value="{{ key }}">{{ key }} ({{ value }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">Please select your age group</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="education" class="form-label">Education Level</label>
+                                <select class="form-select" id="education" name="education" required>
+                                    {% for key, value in education_levels.items() %}
+                                        <option value="{{ key }}">{{ key }} ({{ value }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">What is the highest grade or year of school you completed?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="income" class="form-label">Income Level</label>
+                                <select class="form-select" id="income" name="income" required>
+                                    {% for key, value in income_levels.items() %}
+                                        <option value="{{ key }}">{{ key }} ({{ value }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">What is your annual household income?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="any_healthcare" class="form-label">Have Healthcare Coverage</label>
+                                <select class="form-select" id="any_healthcare" name="any_healthcare" required>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Do you have any kind of health care coverage, including health insurance, prepaid plans such as HMOs, or government plans such as Medicare?</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6 d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Predict Diabetes Risk</button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <a href="{{ url_for('export_csv') }}" class="btn btn-secondary">Export Predictions to CSV</a>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="card-title mb-0" data-bs-toggle="collapse" data-bs-target="#featureInfo" style="cursor: pointer;">
+                            Feature Information <span class="float-end">+</span>
+                        </h5>
+                    </div>
+                    <div class="card-body collapse" id="featureInfo">
+                        <h5>Feature Descriptions:</h5>
+                        
+                        <h6 class="mt-3">Medical Conditions/Metrics:</h6>
+                        <ul>
+                            <li><strong>High Blood Pressure (HighBP):</strong> Whether you have high blood pressure</li>
+                            <li><strong>High Cholesterol (HighChol):</strong> Whether you have high cholesterol</li>
+                            <li><strong>BMI:</strong> Body Mass Index - a measure of body fat based on height and weight</li>
+                            <li><strong>Stroke:</strong> Whether you've ever had a stroke</li>
+                            <li><strong>Heart Disease/Attack:</strong> History of heart disease or heart attack</li>
+                        </ul>
+                        
+                        <h6 class="mt-3">Lifestyle Factors:</h6>
+                        <ul>
+                            <li><strong>Smoker:</strong> Whether you've smoked at least 100 cigarettes in your life</li>
+                            <li><strong>Physical Activity:</strong> Whether you've been physically active in the past 30 days</li>
+                            <li><strong>Fruits/Vegetables:</strong> Whether you consume fruits/vegetables at least once per day</li>
+                            <li><strong>Heavy Alcohol Consumption:</strong> Adult men having more than 14 drinks per week and adult women having more than 7 drinks per week</li>
+                        </ul>
+                        
+                        <h6 class="mt-3">Health Status:</h6>
+                        <ul>
+                            <li><strong>General Health:</strong> Rating from 1 (excellent) to 5 (poor)</li>
+                            <li><strong>Mental/Physical Health:</strong> Number of days of poor health in past 30 days</li>
+                            <li><strong>Difficulty Walking:</strong> Whether you have difficulty walking or climbing stairs</li>
+                        </ul>
+                        
+                        <h6 class="mt-3">Demographics:</h6>
+                        <ul>
+                            <li><strong>Age:</strong> Age group categories from 18-24 years old to 80 years and older</li>
+                            <li><strong>Education:</strong> Education level from never attended school to college graduate</li>
+                            <li><strong>Income:</strong> Annual household income categories from less than $10,000 to $75,000 or more</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

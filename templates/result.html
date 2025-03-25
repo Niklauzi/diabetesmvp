@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diabetes Prediction Result</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h2 class="text-center mb-0">Prediction Result</h2>
+            </div>
+            <div class="card-body">
+              <div class="text-center mb-4">
+                {% if prediction == 0 %}
+                <div class="alert alert-success py-4">
+                  <h3 class="mb-0">
+                    Based on the provided information, you likely don't have
+                    Diabetes.
+                  </h3>
+                </div>
+                {% else %}
+                <div class="alert alert-warning py-4">
+                  <h3 class="mb-0">
+                    Based on the provided information, you might have Diabetes.
+                  </h3>
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-12">
+                  <div class="progress" style="height: 30px">
+                    <div
+                      class="progress-bar bg-danger"
+                      role="progressbar"
+                      style="width: {{ probability }}%;"
+                      aria-valuenow="{{ probability }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      {{ "%.2f"|format(probability) }}%
+                    </div>
+                  </div>
+                  <p class="text-center mt-2">Probability of having diabetes</p>
+                </div>
+              </div>
+
+              <div class="alert alert-info">
+                <h5 class="alert-heading">Important Note:</h5>
+                <p>
+                  This prediction is based on statistical analysis and should
+                  not be considered as medical advice. Please consult with a
+                  healthcare professional for proper diagnosis.
+                </p>
+                <hr />
+                <p class="mb-0">
+                  <strong>Results are screening tools, not diagnoses!!!</strong>
+                </p>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-6">
+                  <a href="{{ url_for('index') }}" class="btn btn-primary w-100"
+                    >Make Another Prediction</a
+                  >
+                </div>
+                <div class="col-6">
+                  <a
+                    href="{{ url_for('export_csv') }}"
+                    class="btn btn-secondary w-100"
+                    >Export All Predictions</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+/* Main Styles */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card styling */
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+}
+
+/* Form styling */
+.form-label {
+  font-weight: 500;
+}
+
+.form-text {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.form-select,
+.form-control {
+  border-radius: 6px;
+  padding: 10px;
+}
+
+/* Button styling */
+.btn {
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+/* Progress bar */
+.progress {
+  border-radius: 10px;
+  height: 30px;
+}
+
+.progress-bar {
+  border-radius: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 15px;
+  }
+}
